@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>1000+ Harsh Roast Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    body {
+      font-family: 'Montserrat', sans-serif;
+      /* 10 different colors in a gradient background */
+      background: linear-gradient(135deg, 
+        #FF5733,  /* vibrant orange */
+        #FFC300,  /* vivid yellow */
+        #DAF7A6,  /* pale green */
+        #33FFBD,  /* aqua */
+        #33D4FF,  /* sky blue */
+        #335BFF,  /* deep blue */
+        #8B33FF,  /* purple */
+        #FF33F6,  /* hot pink */
+        #FF3380,  /* magenta */
+        #FF8F33   /* light orange */
+      );
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 40px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 12px 15px;
+      font-size: 1em;
+      border: none;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      outline: none;
+      transition: box-shadow 0.3s ease;
+    }
+    input[type="text"]:focus {
+      box-shadow: 0 0 8px rgba(255, 107, 107, 0.8);
+    }
+    button {
+      padding: 12px 25px;
+      font-size: 1em;
+      cursor: pointer;
+      background: linear-gradient(135deg, #FF5733, #FF8F33);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-bottom: 20px;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #FF8F33, #FF5733);
+      transform: scale(1.03);
+    }
+    #output {
+      font-size: 1.2em;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      min-height: 40px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+      color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Harsh Roast Generator</h1>
+    <input type="text" id="nameInput" placeholder="Enter a name to roast" />
+    <br>
+    <button id="roastBtn">Roast!</button>
+    <div id="output"></div>
+  </div>
+  
+  <script>
+    // Arrays of harsh descriptors (each with 10 entries)
+    const harshAdj1 = [
+      "pathetic", "worthless", "insignificant", "pitiful", "dismal",
+      "atrocious", "abysmal", "lamentable", "miserable", "wretched"
+    ];
+    const harshAdj2 = [
+      "horrible", "disgusting", "repulsive", "abominable", "appalling",
+      "vile", "nauseating", "deplorable", "loathsome", "despicable"
+    ];
+    const harshNoun1 = [
+      "brain", "intellect", "mind", "IQ", "wit",
+      "common sense", "sanity", "logic", "reason", "smarts"
+    ];
+    const harshNoun2 = [
+      "sloth", "donkey", "rock", "asteroid", "zombie",
+      "fossil", "parasite", "dinosaur", "clay pigeon", "empty suit"
+    ];
+    const harshVerb = [
+      "suffer", "fail", "drown", "wither", "crumble",
+      "collapse", "waste away", "evaporate", "vanish", "disintegrate"
+    ];
+    
+    // Harsh templates with combinatorial slots
+    const harshTemplates = [
+      "Hey {name}, your {noun1} is so {adj1} that it makes a {noun2} look {adj2}.",
+      "Dear {name}, even a {noun2} has more {noun1} than you, and that's saying something.",
+      "Wow {name}, your {noun1} is like a {adj1} {noun2} that will never {verb}.",
+      "Listen up, {name}: Your {noun1} is as {adj1} as a {noun2} trying to {verb} in a {adj2} world.",
+      "I'm not saying you're {adj1}, {name}, but your {noun1} could make a {noun2} look like a genius."
+    ];
+    
+    // Generates a harsh roast using a random template and random words.
+    function generateHarshRoast(name) {
+      const template = harshTemplates[Math.floor(Math.random() * harshTemplates.length)];
+      const adj1 = harshAdj1[Math.floor(Math.random() * harshAdj1.length)];
+      const adj2 = harshAdj2[Math.floor(Math.random() * harshAdj2.length)];
+      const noun1 = harshNoun1[Math.floor(Math.random() * harshNoun1.length)];
+      const noun2 = harshNoun2[Math.floor(Math.random() * harshNoun2.length)];
+      const verb = harshVerb[Math.floor(Math.random() * harshVerb.length)];
+      
+      let roast = template.replace("{name}", name)
+                          .replace("{adj1}", adj1)
+                          .replace("{adj2}", adj2)
+                          .replace("{noun1}", noun1)
+                          .replace("{noun2}", noun2)
+                          .replace("{verb}", verb);
+      return roast;
+    }
+    
+    // When the user clicks the button, generate and display a harsh roast.
+    document.getElementById('roastBtn').addEventListener('click', () => {
+      const name = document.getElementById('nameInput').value.trim();
+      const outputDiv = document.getElementById('output');
+
+      if (!name) {
+        alert("Please enter a name.");
+        return;
+      }
+      
+      // Generate and display a unique harsh roast.
+      const roast = generateHarshRoast(name);
+      outputDiv.textContent = roast;
+    });
+  </script>
+</body>
+</html>
