@@ -2,164 +2,637 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>1000+ Harsh Roast Generator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Unicode Chess Engine</title>
   <style>
-    /* Global Styles */
+    :root {
+      color-scheme: dark;
+      --bg: #10131a;
+      --panel: #1a1f2b;
+      --text: #eef3ff;
+      --accent: #7aa2ff;
+      --muted: #9db2d4;
+    }
+
     body {
-      font-family: 'Montserrat', sans-serif;
-      /* 10 different colors in a gradient background */
-      background: linear-gradient(135deg, 
-        #FF5733,  /* vibrant orange */
-        #FFC300,  /* vivid yellow */
-        #DAF7A6,  /* pale green */
-        #33FFBD,  /* aqua */
-        #33D4FF,  /* sky blue */
-        #335BFF,  /* deep blue */
-        #8B33FF,  /* purple */
-        #FF33F6,  /* hot pink */
-        #FF3380,  /* magenta */
-        #FF8F33   /* light orange */
-      );
       margin: 0;
-      padding: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top, #1e2740 0%, var(--bg) 60%);
+      color: var(--text);
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      color: #fff;
+      padding: 24px;
     }
-    .container {
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      padding: 40px;
-      width: 90%;
-      max-width: 600px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(8px);
-      text-align: center;
+
+    .app {
+      width: min(900px, 100%);
+      background: rgba(26, 31, 43, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
     }
+
     h1 {
-      font-size: 2.5em;
-      margin-bottom: 20px;
-      font-weight: 700;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      margin: 0 0 8px;
+      font-size: 1.7rem;
     }
-    input[type="text"] {
-      width: 80%;
-      padding: 12px 15px;
-      font-size: 1em;
-      border: none;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      outline: none;
-      transition: box-shadow 0.3s ease;
+
+    p {
+      margin: 0 0 16px;
+      color: var(--muted);
     }
-    input[type="text"]:focus {
-      box-shadow: 0 0 8px rgba(255, 107, 107, 0.8);
+
+    #board {
+      font-family: "Cascadia Mono", "Consolas", monospace;
+      white-space: pre;
+      line-height: 1.35;
+      background: #0f1320;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 16px;
+      overflow-x: auto;
+      font-size: 1.1rem;
+      margin-bottom: 16px;
     }
-    button {
-      padding: 12px 25px;
-      font-size: 1em;
-      cursor: pointer;
-      background: linear-gradient(135deg, #FF5733, #FF8F33);
-      border: none;
-      border-radius: 6px;
-      color: #fff;
-      transition: background 0.3s ease, transform 0.2s ease;
-      margin-bottom: 20px;
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
     }
-    button:hover {
-      background: linear-gradient(135deg, #FF8F33, #FF5733);
-      transform: scale(1.03);
-    }
-    #output {
-      font-size: 1.2em;
-      margin-top: 20px;
-      padding: 20px;
+
+    input {
+      flex: 1;
+      min-width: 220px;
+      background: #0f1320;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.2);
-      min-height: 40px;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-      color: #fff;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: var(--accent);
+      color: #0f1320;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+
+    #status,
+    #history {
+      font-family: "Cascadia Mono", "Consolas", monospace;
+      background: #0f1320;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+
+    #status {
+      color: #c9dcff;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Harsh Roast Generator</h1>
-    <input type="text" id="nameInput" placeholder="Enter a name to roast" />
-    <br>
-    <button id="roastBtn">Roast!</button>
-    <div id="output"></div>
-  </div>
-  
-  <script>
-    // Arrays of harsh descriptors (each with 10 entries)
-    const harshAdj1 = [
-      "pathetic", "worthless", "insignificant", "pitiful", "dismal",
-      "atrocious", "abysmal", "lamentable", "miserable", "wretched"
-    ];
-    const harshAdj2 = [
-      "horrible", "disgusting", "repulsive", "abominable", "appalling",
-      "vile", "nauseating", "deplorable", "loathsome", "despicable"
-    ];
-    const harshNoun1 = [
-      "brain", "intellect", "mind", "IQ", "wit",
-      "common sense", "sanity", "logic", "reason", "smarts"
-    ];
-    const harshNoun2 = [
-      "sloth", "donkey", "rock", "asteroid", "zombie",
-      "fossil", "parasite", "dinosaur", "clay pigeon", "empty suit"
-    ];
-    const harshVerb = [
-      "suffer", "fail", "drown", "wither", "crumble",
-      "collapse", "waste away", "evaporate", "vanish", "disintegrate"
-    ];
-    
-    // Harsh templates with combinatorial slots
-    const harshTemplates = [
-      "Hey {name}, your {noun1} is so {adj1} that it makes a {noun2} look {adj2}.",
-      "Dear {name}, even a {noun2} has more {noun1} than you, and that's saying something.",
-      "Wow {name}, your {noun1} is like a {adj1} {noun2} that will never {verb}.",
-      "Listen up, {name}: Your {noun1} is as {adj1} as a {noun2} trying to {verb} in a {adj2} world.",
-      "I'm not saying you're {adj1}, {name}, but your {noun1} could make a {noun2} look like a genius."
-    ];
-    
-    // Generates a harsh roast using a random template and random words.
-    function generateHarshRoast(name) {
-      const template = harshTemplates[Math.floor(Math.random() * harshTemplates.length)];
-      const adj1 = harshAdj1[Math.floor(Math.random() * harshAdj1.length)];
-      const adj2 = harshAdj2[Math.floor(Math.random() * harshAdj2.length)];
-      const noun1 = harshNoun1[Math.floor(Math.random() * harshNoun1.length)];
-      const noun2 = harshNoun2[Math.floor(Math.random() * harshNoun2.length)];
-      const verb = harshVerb[Math.floor(Math.random() * harshVerb.length)];
-      
-      let roast = template.replace("{name}", name)
-                          .replace("{adj1}", adj1)
-                          .replace("{adj2}", adj2)
-                          .replace("{noun1}", noun1)
-                          .replace("{noun2}", noun2)
-                          .replace("{verb}", verb);
-      return roast;
-    }
-    
-    // When the user clicks the button, generate and display a harsh roast.
-    document.getElementById('roastBtn').addEventListener('click', () => {
-      const name = document.getElementById('nameInput').value.trim();
-      const outputDiv = document.getElementById('output');
+  <main class="app">
+    <h1>Chess Engine (You are White)</h1>
+    <p>Enter your move in algebraic notation (e.g. <code>e4</code>, <code>Nf3</code>, <code>O-O</code>, <code>Qxe7+</code>).</p>
 
-      if (!name) {
-        alert("Please enter a name.");
+    <div id="board" aria-live="polite"></div>
+
+    <div class="controls">
+      <input id="moveInput" type="text" placeholder="Your move (SAN)" autocomplete="off" />
+      <button id="playBtn">Play move</button>
+      <button id="resetBtn">Reset game</button>
+    </div>
+
+    <div id="status"></div>
+    <div id="history"></div>
+  </main>
+
+  <script>
+    const EMPTY = '.';
+    const WHITE = 'w';
+    const BLACK = 'b';
+    const PIECES = {
+      K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙',
+      k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟'
+    };
+    const VALUES = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
+
+    let state;
+
+    function initialState() {
+      return {
+        board: [
+          ['r','n','b','q','k','b','n','r'],
+          ['p','p','p','p','p','p','p','p'],
+          [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+          [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+          [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+          [EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+          ['P','P','P','P','P','P','P','P'],
+          ['R','N','B','Q','K','B','N','R']
+        ],
+        turn: WHITE,
+        castling: { K: true, Q: true, k: true, q: true },
+        enPassant: null,
+        halfMove: 0,
+        fullMove: 1,
+        moveHistory: [],
+        gameOver: false
+      };
+    }
+
+    function cloneGame(g) {
+      return {
+        board: g.board.map(r => [...r]),
+        turn: g.turn,
+        castling: { ...g.castling },
+        enPassant: g.enPassant ? { ...g.enPassant } : null,
+        halfMove: g.halfMove,
+        fullMove: g.fullMove,
+        moveHistory: [...g.moveHistory],
+        gameOver: g.gameOver
+      };
+    }
+
+    function isUpper(ch) { return ch >= 'A' && ch <= 'Z'; }
+    function colorOf(piece) {
+      if (piece === EMPTY) return null;
+      return isUpper(piece) ? WHITE : BLACK;
+    }
+    function typeOf(piece) { return piece.toLowerCase(); }
+    function inBounds(r, c) { return r >= 0 && r < 8 && c >= 0 && c < 8; }
+    function sqToAlg(r, c) { return 'abcdefgh'[c] + (8 - r); }
+    function algToSq(alg) {
+      const file = alg.charCodeAt(0) - 97;
+      const rank = 8 - Number(alg[1]);
+      return { r: rank, c: file };
+    }
+
+    function renderBoard(g) {
+      const lines = [];
+      lines.push('    a  b  c  d  e  f  g  h');
+      lines.push('  ┌────────────────────────┐');
+      for (let r = 0; r < 8; r++) {
+        let row = `${8 - r} │`;
+        for (let c = 0; c < 8; c++) {
+          const p = g.board[r][c];
+          row += ` ${p === EMPTY ? '·' : PIECES[p]} `;
+        }
+        row += `│ ${8 - r}`;
+        lines.push(row);
+      }
+      lines.push('  └────────────────────────┘');
+      lines.push('    a  b  c  d  e  f  g  h');
+      return lines.join('\n');
+    }
+
+    function findKing(g, color) {
+      const target = color === WHITE ? 'K' : 'k';
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          if (g.board[r][c] === target) return { r, c };
+        }
+      }
+      return null;
+    }
+
+    function isSquareAttacked(g, tr, tc, byColor) {
+      const board = g.board;
+
+      const pawnDir = byColor === WHITE ? -1 : 1;
+      const pawn = byColor === WHITE ? 'P' : 'p';
+      for (const dc of [-1, 1]) {
+        const r = tr - pawnDir;
+        const c = tc + dc;
+        if (inBounds(r, c) && board[r][c] === pawn) return true;
+      }
+
+      const knight = byColor === WHITE ? 'N' : 'n';
+      const knightSteps = [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
+      for (const [dr, dc] of knightSteps) {
+        const r = tr + dr;
+        const c = tc + dc;
+        if (inBounds(r, c) && board[r][c] === knight) return true;
+      }
+
+      const bishop = byColor === WHITE ? 'B' : 'b';
+      const rook = byColor === WHITE ? 'R' : 'r';
+      const queen = byColor === WHITE ? 'Q' : 'q';
+      const king = byColor === WHITE ? 'K' : 'k';
+
+      const lines = [
+        [-1,-1],[-1,1],[1,-1],[1,1],
+        [-1,0],[1,0],[0,-1],[0,1]
+      ];
+      for (let i = 0; i < lines.length; i++) {
+        const [dr, dc] = lines[i];
+        let r = tr + dr;
+        let c = tc + dc;
+        let dist = 1;
+        while (inBounds(r, c)) {
+          const p = board[r][c];
+          if (p !== EMPTY) {
+            if (colorOf(p) === byColor) {
+              const t = typeOf(p);
+              const diagonal = i < 4;
+              if ((diagonal && (t === 'b' || t === 'q')) || (!diagonal && (t === 'r' || t === 'q'))) return true;
+              if (dist === 1 && t === 'k') return true;
+            }
+            break;
+          }
+          r += dr;
+          c += dc;
+          dist++;
+        }
+      }
+      return false;
+    }
+
+    function inCheck(g, color) {
+      const k = findKing(g, color);
+      if (!k) return false;
+      return isSquareAttacked(g, k.r, k.c, color === WHITE ? BLACK : WHITE);
+    }
+
+    function pseudoMoves(g, r, c) {
+      const p = g.board[r][c];
+      const color = colorOf(p);
+      const t = typeOf(p);
+      const moves = [];
+      const forward = color === WHITE ? -1 : 1;
+
+      function push(toR, toC, extras = {}) {
+        if (!inBounds(toR, toC)) return;
+        moves.push({ from: { r, c }, to: { r: toR, c: toC }, piece: p, ...extras });
+      }
+
+      if (t === 'p') {
+        const one = r + forward;
+        if (inBounds(one, c) && g.board[one][c] === EMPTY) {
+          if (one === 0 || one === 7) {
+            ['q','r','b','n'].forEach(pr => push(one, c, { promotion: color === WHITE ? pr.toUpperCase() : pr }));
+          } else {
+            push(one, c);
+          }
+          const start = color === WHITE ? 6 : 1;
+          const two = r + forward * 2;
+          if (r === start && g.board[two][c] === EMPTY) push(two, c, { doublePawn: true });
+        }
+        for (const dc of [-1, 1]) {
+          const tr = r + forward;
+          const tc = c + dc;
+          if (!inBounds(tr, tc)) continue;
+          const target = g.board[tr][tc];
+          if (target !== EMPTY && colorOf(target) !== color) {
+            if (tr === 0 || tr === 7) {
+              ['q','r','b','n'].forEach(pr => push(tr, tc, { capture: true, promotion: color === WHITE ? pr.toUpperCase() : pr }));
+            } else {
+              push(tr, tc, { capture: true });
+            }
+          }
+        }
+        if (g.enPassant) {
+          if (Math.abs(g.enPassant.c - c) === 1 && g.enPassant.r === r + forward) {
+            push(g.enPassant.r, g.enPassant.c, { capture: true, enPassant: true });
+          }
+        }
+      }
+
+      if (t === 'n') {
+        for (const [dr, dc] of [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]]) {
+          const tr = r + dr, tc = c + dc;
+          if (!inBounds(tr, tc)) continue;
+          const target = g.board[tr][tc];
+          if (target === EMPTY || colorOf(target) !== color) push(tr, tc, { capture: target !== EMPTY });
+        }
+      }
+
+      if (t === 'b' || t === 'r' || t === 'q') {
+        const dirs = [];
+        if (t === 'b' || t === 'q') dirs.push([-1,-1],[-1,1],[1,-1],[1,1]);
+        if (t === 'r' || t === 'q') dirs.push([-1,0],[1,0],[0,-1],[0,1]);
+        for (const [dr, dc] of dirs) {
+          let tr = r + dr, tc = c + dc;
+          while (inBounds(tr, tc)) {
+            const target = g.board[tr][tc];
+            if (target === EMPTY) {
+              push(tr, tc);
+            } else {
+              if (colorOf(target) !== color) push(tr, tc, { capture: true });
+              break;
+            }
+            tr += dr;
+            tc += dc;
+          }
+        }
+      }
+
+      if (t === 'k') {
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            if (dr === 0 && dc === 0) continue;
+            const tr = r + dr, tc = c + dc;
+            if (!inBounds(tr, tc)) continue;
+            const target = g.board[tr][tc];
+            if (target === EMPTY || colorOf(target) !== color) push(tr, tc, { capture: target !== EMPTY });
+          }
+        }
+        if (color === WHITE && r === 7 && c === 4) {
+          if (g.castling.K && g.board[7][5] === EMPTY && g.board[7][6] === EMPTY &&
+              !isSquareAttacked(g, 7, 4, BLACK) && !isSquareAttacked(g, 7, 5, BLACK) && !isSquareAttacked(g, 7, 6, BLACK)) {
+            push(7, 6, { castle: 'K' });
+          }
+          if (g.castling.Q && g.board[7][1] === EMPTY && g.board[7][2] === EMPTY && g.board[7][3] === EMPTY &&
+              !isSquareAttacked(g, 7, 4, BLACK) && !isSquareAttacked(g, 7, 3, BLACK) && !isSquareAttacked(g, 7, 2, BLACK)) {
+            push(7, 2, { castle: 'Q' });
+          }
+        }
+        if (color === BLACK && r === 0 && c === 4) {
+          if (g.castling.k && g.board[0][5] === EMPTY && g.board[0][6] === EMPTY &&
+              !isSquareAttacked(g, 0, 4, WHITE) && !isSquareAttacked(g, 0, 5, WHITE) && !isSquareAttacked(g, 0, 6, WHITE)) {
+            push(0, 6, { castle: 'k' });
+          }
+          if (g.castling.q && g.board[0][1] === EMPTY && g.board[0][2] === EMPTY && g.board[0][3] === EMPTY &&
+              !isSquareAttacked(g, 0, 4, WHITE) && !isSquareAttacked(g, 0, 3, WHITE) && !isSquareAttacked(g, 0, 2, WHITE)) {
+            push(0, 2, { castle: 'q' });
+          }
+        }
+      }
+
+      return moves;
+    }
+
+    function applyMove(g, m) {
+      const ng = cloneGame(g);
+      const piece = ng.board[m.from.r][m.from.c];
+      const color = colorOf(piece);
+      const target = ng.board[m.to.r][m.to.c];
+
+      ng.enPassant = null;
+      ng.board[m.from.r][m.from.c] = EMPTY;
+
+      if (m.enPassant) {
+        const capR = color === WHITE ? m.to.r + 1 : m.to.r - 1;
+        ng.board[capR][m.to.c] = EMPTY;
+      }
+
+      ng.board[m.to.r][m.to.c] = m.promotion || piece;
+
+      if (m.castle) {
+        if (m.castle === 'K') {
+          ng.board[7][7] = EMPTY; ng.board[7][5] = 'R';
+        } else if (m.castle === 'Q') {
+          ng.board[7][0] = EMPTY; ng.board[7][3] = 'R';
+        } else if (m.castle === 'k') {
+          ng.board[0][7] = EMPTY; ng.board[0][5] = 'r';
+        } else if (m.castle === 'q') {
+          ng.board[0][0] = EMPTY; ng.board[0][3] = 'r';
+        }
+      }
+
+      if (typeOf(piece) === 'p' && m.doublePawn) {
+        ng.enPassant = { r: (m.from.r + m.to.r) / 2, c: m.from.c };
+      }
+
+      if (piece === 'K') { ng.castling.K = false; ng.castling.Q = false; }
+      if (piece === 'k') { ng.castling.k = false; ng.castling.q = false; }
+      if (m.from.r === 7 && m.from.c === 0 || m.to.r === 7 && m.to.c === 0) ng.castling.Q = false;
+      if (m.from.r === 7 && m.from.c === 7 || m.to.r === 7 && m.to.c === 7) ng.castling.K = false;
+      if (m.from.r === 0 && m.from.c === 0 || m.to.r === 0 && m.to.c === 0) ng.castling.q = false;
+      if (m.from.r === 0 && m.from.c === 7 || m.to.r === 0 && m.to.c === 7) ng.castling.k = false;
+
+      ng.halfMove = (typeOf(piece) === 'p' || target !== EMPTY || m.enPassant) ? 0 : ng.halfMove + 1;
+      if (g.turn === BLACK) ng.fullMove++;
+      ng.turn = g.turn === WHITE ? BLACK : WHITE;
+      return ng;
+    }
+
+    function legalMoves(g, color = g.turn) {
+      const all = [];
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const p = g.board[r][c];
+          if (p === EMPTY || colorOf(p) !== color) continue;
+          for (const m of pseudoMoves(g, r, c)) {
+            const next = applyMove(g, m);
+            if (!inCheck(next, color)) all.push(m);
+          }
+        }
+      }
+      return all;
+    }
+
+    function sameMove(a, b) {
+      return a.from.r === b.from.r && a.from.c === b.from.c && a.to.r === b.to.r && a.to.c === b.to.c &&
+        (a.promotion || '') === (b.promotion || '');
+    }
+
+    function moveToSAN(g, move, legalList) {
+      if (move.castle === 'K' || move.castle === 'k') return annotateCheck(g, move, 'O-O');
+      if (move.castle === 'Q' || move.castle === 'q') return annotateCheck(g, move, 'O-O-O');
+
+      const piece = g.board[move.from.r][move.from.c];
+      const t = typeOf(piece);
+      const pieceLetter = t === 'p' ? '' : piece.toUpperCase();
+      const capture = move.capture || move.enPassant || g.board[move.to.r][move.to.c] !== EMPTY;
+
+      let disambiguation = '';
+      if (t !== 'p') {
+        const candidates = legalList.filter(m => m !== move && m.to.r === move.to.r && m.to.c === move.to.c && g.board[m.from.r][m.from.c] === piece);
+        if (candidates.length) {
+          const sameFile = candidates.some(m => m.from.c === move.from.c);
+          const sameRank = candidates.some(m => m.from.r === move.from.r);
+          if (!sameFile) disambiguation = 'abcdefgh'[move.from.c];
+          else if (!sameRank) disambiguation = String(8 - move.from.r);
+          else disambiguation = 'abcdefgh'[move.from.c] + (8 - move.from.r);
+        }
+      }
+
+      const fromFile = 'abcdefgh'[move.from.c];
+      let san = pieceLetter;
+      if (t === 'p' && capture) san += fromFile;
+      san += disambiguation;
+      san += capture ? 'x' : '';
+      san += sqToAlg(move.to.r, move.to.c);
+      if (move.promotion) san += '=' + move.promotion.toUpperCase();
+      return annotateCheck(g, move, san);
+    }
+
+    function annotateCheck(g, move, san) {
+      const next = applyMove(g, move);
+      const op = next.turn;
+      const opMoves = legalMoves(next, op);
+      if (inCheck(next, op)) {
+        if (opMoves.length === 0) return san + '#';
+        return san + '+';
+      }
+      return san;
+    }
+
+    function parseInputToMove(g, input) {
+      const clean = input.replace(/\s+/g, '').replace(/[+#]$/, '');
+      const moves = legalMoves(g);
+      const sanMap = new Map();
+      for (const m of moves) {
+        sanMap.set(moveToSAN(g, m, moves).replace(/[+#]$/, ''), m);
+      }
+
+      if (sanMap.has(clean)) return { move: sanMap.get(clean) };
+
+      const coord = clean.match(/^([a-h][1-8])([a-h][1-8])([qQrRbBnN])?$/);
+      if (coord) {
+        const from = algToSq(coord[1]);
+        const to = algToSq(coord[2]);
+        const promo = coord[3] ? (g.turn === WHITE ? coord[3].toUpperCase() : coord[3].toLowerCase()) : undefined;
+        const picked = moves.find(m => m.from.r === from.r && m.from.c === from.c && m.to.r === to.r && m.to.c === to.c && (m.promotion || undefined) === (promo || m.promotion || undefined));
+        if (picked) return { move: picked };
+      }
+      return { error: 'Illegal move. Please retry using valid algebraic notation.' };
+    }
+
+    function evaluate(g) {
+      let score = 0;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const p = g.board[r][c];
+          if (p === EMPTY) continue;
+          const val = VALUES[typeOf(p)] || 0;
+          score += colorOf(p) === WHITE ? val : -val;
+        }
+      }
+      return score;
+    }
+
+    function bestEngineMove(g, depth = 2) {
+      const moves = legalMoves(g);
+      if (!moves.length) return null;
+      let best = null;
+      let bestScore = g.turn === WHITE ? -Infinity : Infinity;
+
+      function minimax(pos, d, alpha, beta) {
+        const color = pos.turn;
+        const lm = legalMoves(pos);
+        if (d === 0 || lm.length === 0) {
+          if (!lm.length && inCheck(pos, color)) return color === WHITE ? -999999 : 999999;
+          return evaluate(pos);
+        }
+
+        if (color === WHITE) {
+          let val = -Infinity;
+          for (const mv of lm) {
+            val = Math.max(val, minimax(applyMove(pos, mv), d - 1, alpha, beta));
+            alpha = Math.max(alpha, val);
+            if (alpha >= beta) break;
+          }
+          return val;
+        }
+
+        let val = Infinity;
+        for (const mv of lm) {
+          val = Math.min(val, minimax(applyMove(pos, mv), d - 1, alpha, beta));
+          beta = Math.min(beta, val);
+          if (alpha >= beta) break;
+        }
+        return val;
+      }
+
+      for (const mv of moves) {
+        const score = minimax(applyMove(g, mv), depth - 1, -Infinity, Infinity);
+        if (g.turn === WHITE) {
+          if (score > bestScore) { bestScore = score; best = mv; }
+        } else if (score < bestScore) {
+          bestScore = score; best = mv;
+        }
+      }
+      return best;
+    }
+
+    function updateUI(message = '') {
+      document.getElementById('board').textContent = renderBoard(state);
+      const turnText = state.gameOver ? 'Game over.' : `${state.turn === WHITE ? 'White' : 'Black'} to move.`;
+      document.getElementById('status').textContent = `${turnText}\n${message}`.trim();
+      const history = state.moveHistory.map((entry, i) => `${i + 1}. ${entry}`).join('\n');
+      document.getElementById('history').textContent = history || 'Moves will appear here.';
+    }
+
+    function finalizeIfGameOver(g, moverColor) {
+      const side = g.turn;
+      const lm = legalMoves(g, side);
+      if (!lm.length) {
+        if (inCheck(g, side)) {
+          g.gameOver = true;
+          return `Checkmate. ${moverColor === WHITE ? 'White' : 'Black'} wins.`;
+        }
+        g.gameOver = true;
+        return 'Stalemate.';
+      }
+      if (inCheck(g, side)) return 'Check.';
+      return '';
+    }
+
+    function playerMove() {
+      if (state.gameOver) return;
+      if (state.turn !== WHITE) return;
+      const input = document.getElementById('moveInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const parsed = parseInputToMove(state, text);
+      if (parsed.error) {
+        updateUI(parsed.error);
         return;
       }
-      
-      // Generate and display a unique harsh roast.
-      const roast = generateHarshRoast(name);
-      outputDiv.textContent = roast;
+
+      const whiteMoves = legalMoves(state);
+      const san = moveToSAN(state, parsed.move, whiteMoves);
+      state = applyMove(state, parsed.move);
+      state.moveHistory.push(`${Math.ceil(state.moveHistory.length / 2 + 1)}. ${san}`);
+
+      let note = finalizeIfGameOver(state, WHITE);
+      if (!state.gameOver) {
+        const blackMove = bestEngineMove(state, 2);
+        if (blackMove) {
+          const blackMoves = legalMoves(state);
+          const blackSan = moveToSAN(state, blackMove, blackMoves);
+          state = applyMove(state, blackMove);
+          const moveNumber = Math.ceil(state.moveHistory.length / 2);
+          state.moveHistory[state.moveHistory.length - 1] += ` ${blackSan}`;
+          const after = finalizeIfGameOver(state, BLACK);
+          note = `You played ${san}. Black replies ${blackSan}.${after ? ` ${after}` : ''}`;
+        }
+      } else {
+        note = `You played ${san}. ${note}`;
+      }
+
+      input.value = '';
+      updateUI(note);
+    }
+
+    function resetGame() {
+      state = initialState();
+      updateUI('Game started. You are White. Please make your move.');
+      document.getElementById('moveInput').value = '';
+    }
+
+    document.getElementById('playBtn').addEventListener('click', playerMove);
+    document.getElementById('resetBtn').addEventListener('click', resetGame);
+    document.getElementById('moveInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') playerMove();
     });
+
+    resetGame();
   </script>
 </body>
 </html>
